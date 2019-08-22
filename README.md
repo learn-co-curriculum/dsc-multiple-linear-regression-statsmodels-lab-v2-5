@@ -14,6 +14,7 @@ You will be able to:
 We pre-processed the Boston Housing Data again. This time, however, we did things slightly different:
 - We dropped "ZN" and "NOX" completely
 - We categorized "RAD" in 3 bins and "TAX" in 4 bins
+- We transformed "RAD" and "TAX" to dummy variables and dropped the first variable.
 - We used min-max-scaling on "B", "CRIM" and "DIS" (and logtransformed all of them first, except "B")
 - We used standardization on "AGE", "INDUS", "LSTAT" and "PTRATIO" (and logtransformed all of them first, except for "AGE") 
 
@@ -28,7 +29,7 @@ boston_features = pd.DataFrame(boston.data, columns = boston.feature_names)
 boston_features = boston_features.drop(["NOX","ZN"],axis=1)
 
 # first, create bins for based on the values observed. 3 values will result in 2 bins
-bins = [0,6,  24]
+bins = [0, 6,  24]
 bins_rad = pd.cut(boston_features['RAD'], bins)
 bins_rad = bins_rad.cat.as_unordered()
 
@@ -37,8 +38,8 @@ bins = [0, 270, 360, 712]
 bins_tax = pd.cut(boston_features['TAX'], bins)
 bins_tax = bins_tax.cat.as_unordered()
 
-tax_dummy = pd.get_dummies(bins_tax, prefix="TAX")
-rad_dummy = pd.get_dummies(bins_rad, prefix="RAD")
+tax_dummy = pd.get_dummies(bins_tax, prefix="TAX", drop_first=True)
+rad_dummy = pd.get_dummies(bins_rad, prefix="RAD", drop_first=True)
 boston_features = boston_features.drop(["RAD","TAX"], axis=1)
 boston_features = pd.concat([boston_features, rad_dummy, tax_dummy], axis=1)
 ```
@@ -70,144 +71,19 @@ boston_features["PTRATIO"] = (logptratio-np.mean(logptratio))/(np.sqrt(np.var(lo
 boston_features.head()
 ```
 
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>CRIM</th>
-      <th>INDUS</th>
-      <th>CHAS</th>
-      <th>RM</th>
-      <th>AGE</th>
-      <th>DIS</th>
-      <th>PTRATIO</th>
-      <th>B</th>
-      <th>LSTAT</th>
-      <th>RAD_(0, 6]</th>
-      <th>RAD_(6, 24]</th>
-      <th>TAX_(0, 270]</th>
-      <th>TAX_(270, 360]</th>
-      <th>TAX_(360, 712]</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>0.000000</td>
-      <td>-1.704344</td>
-      <td>0.0</td>
-      <td>6.575</td>
-      <td>-0.120013</td>
-      <td>0.542096</td>
-      <td>-1.443977</td>
-      <td>1.000000</td>
-      <td>-1.275260</td>
-      <td>1</td>
-      <td>0</td>
-      <td>0</td>
-      <td>1</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>0.153211</td>
-      <td>-0.263239</td>
-      <td>0.0</td>
-      <td>6.421</td>
-      <td>0.367166</td>
-      <td>0.623954</td>
-      <td>-0.230278</td>
-      <td>1.000000</td>
-      <td>-0.263711</td>
-      <td>1</td>
-      <td>0</td>
-      <td>1</td>
-      <td>0</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>0.153134</td>
-      <td>-0.263239</td>
-      <td>0.0</td>
-      <td>7.185</td>
-      <td>-0.265812</td>
-      <td>0.623954</td>
-      <td>-0.230278</td>
-      <td>0.989737</td>
-      <td>-1.627858</td>
-      <td>1</td>
-      <td>0</td>
-      <td>1</td>
-      <td>0</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>0.171005</td>
-      <td>-1.778965</td>
-      <td>0.0</td>
-      <td>6.998</td>
-      <td>-0.809889</td>
-      <td>0.707895</td>
-      <td>0.165279</td>
-      <td>0.994276</td>
-      <td>-2.153192</td>
-      <td>1</td>
-      <td>0</td>
-      <td>1</td>
-      <td>0</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>0.250315</td>
-      <td>-1.778965</td>
-      <td>0.0</td>
-      <td>7.147</td>
-      <td>-0.511180</td>
-      <td>0.707895</td>
-      <td>0.165279</td>
-      <td>1.000000</td>
-      <td>-1.162114</td>
-      <td>1</td>
-      <td>0</td>
-      <td>1</td>
-      <td>0</td>
-      <td>0</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
 ## Run an linear model in Statsmodels
+
+
+```python
+# Your code here
+```
 
 ## Run the same model in Scikit-learn
 
-## Remove the necessary variables to make sure the coefficients are the same for Scikit-learn vs Statsmodels
 
-### Statsmodels
-
-### Scikit-learn
+```python
+# Your code here - Check that the coefficients and intercept are the same as those from Statsmodels
+```
 
 ## Interpret the coefficients for PTRATIO, PTRATIO, LSTAT
 
