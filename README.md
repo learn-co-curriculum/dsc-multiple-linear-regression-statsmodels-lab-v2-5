@@ -2,21 +2,26 @@
 # Multiple Linear Regression in Statsmodels - Lab
 
 ## Introduction
-In this lab, you'll practice fitting a multiple linear regression model on our Boston Housing dataset!
+In this lab, you'll practice fitting a multiple linear regression model on the Boston Housing dataset!
 
 ## Objectives
 You will be able to:
-* Run linear regression on Boston Housing dataset with all the predictors
-* Interpret the parameters of the multiple linear regression model
+* Determine if it is necessary to perform normalization/standardization for a specific model or set of data
+* Use standardization/normalization on features of a dataset
+* Identify if it is necessary to perform log transformations on a set of features
+* Perform log transformations on different features of a dataset
+* Use statsmodels to fit a multiple linear regression model
+* Evaluate a linear regression model by using statistical performance metrics pertaining to overall model and specific parameters
+
 
 ## The Boston Housing Data
 
 We pre-processed the Boston Housing data again. This time, however, we did things slightly different:
 - We dropped `'ZN'` and `'NOX'` completely 
 - We categorized `'RAD'` in 3 bins and `'TAX'` in 4 bins
-- We transformed `'RAD'` and `'TAX'` to dummy variables and dropped the first variable.
-- We used min-max-scaling on `'B'`, `'CRIM'`, and `'DIS'` (and logtransformed all of them first, except `'B'`)
-- We used standardization on `'AGE'`, `'INDUS'`, `'LSTAT'`, and `'PTRATIO'` (and logtransformed all of them first, except for `'AGE'`) 
+- We transformed `'RAD'` and `'TAX'` to dummy variables and dropped the first variable to eliminate multicollinearity
+- We used min-max-scaling on `'B'`, `'CRIM'`, and `'DIS'` (and log transformed all of them first, except `'B'`)
+- We used standardization on `'AGE'`, `'INDUS'`, `'LSTAT'`, and `'PTRATIO'` (and log transformed all of them first, except for `'AGE'`) 
 
 
 ```python
@@ -71,14 +76,14 @@ boston_features['PTRATIO'] = (logptratio-np.mean(logptratio))/(np.sqrt(np.var(lo
 boston_features.head()
 ```
 
-## Run an linear model in Statsmodels
+## Run a linear model in statsmodels
 
 
 ```python
 # Your code here
 ```
 
-## Run the same model in Scikit-learn
+## Run the same model in scikit-learn
 
 
 ```python
@@ -116,4 +121,4 @@ Make sure to transform your variables as needed!
 - TAX: 284
 
 ## Summary
-Congratulations! You've fitted your first multiple linear regression model on the Boston Housing data.
+Congratulations! You pre-processed the Boston Housing data using scaling and standardization. You also fitted your first multiple linear regression model on the Boston Housing data using statsmodels and scikit-learn!
