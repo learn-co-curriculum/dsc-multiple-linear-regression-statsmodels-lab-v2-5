@@ -101,7 +101,7 @@ boston_features.head()
 - RAD: index of accessibility to radial highways
 - TAX: full-value property-tax rate per $10,000
 - PTRATIO: pupil-teacher ratio by town
-- B: 1000(Bk - 0.63)^2 where Bk is the proportion of blacks by town
+- B: 1000(Bk - 0.63)^2 where Bk is the proportion of African American individuals by town
 - LSTAT: % lower status of the population
 
 ## Predict the house price given the following characteristics (before manipulation!!)
