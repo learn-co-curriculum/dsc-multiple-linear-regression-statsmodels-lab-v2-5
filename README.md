@@ -2,7 +2,7 @@
 # Multiple Linear Regression in Statsmodels - Lab
 
 ## Introduction
-In this lab, you'll practice fitting a multiple linear regression model on the Boston Housing dataset!
+In this lab, you'll practice fitting a multiple linear regression model on the Ames Housing dataset!
 
 ## Objectives
 You will be able to:
@@ -14,69 +14,46 @@ You will be able to:
 * Evaluate a linear regression model by using statistical performance metrics pertaining to overall model and specific parameters
 
 
-## The Boston Housing Data
+## The Ames Housing Data
 
-We pre-processed the Boston Housing data again. This time, however, we did things slightly different:
-- We dropped `'ZN'` and `'NOX'` completely 
-- We categorized `'RAD'` in 3 bins and `'TAX'` in 4 bins
-- We transformed `'RAD'` and `'TAX'` to dummy variables and dropped the first variable to eliminate multicollinearity
-- We used min-max-scaling on `'B'`, `'CRIM'`, and `'DIS'` (and log transformed all of them first, except `'B'`)
-- We used standardization on `'AGE'`, `'INDUS'`, `'LSTAT'`, and `'PTRATIO'` (and log transformed all of them first, except for `'AGE'`) 
+Using the specified continuous and categorical features, preprocess your data to prepare for modeling:
+* Split off and one hot encode the categorical features of interest
+* Log and scale the selected continuous features
 
 
 ```python
 import pandas as pd
 import numpy as np
-from sklearn.datasets import load_boston
-boston = load_boston()
 
-boston_features = pd.DataFrame(boston.data, columns = boston.feature_names)
-boston_features = boston_features.drop(['NOX', 'ZN'],axis=1)
+ames = pd.read_csv('ames.csv')
 
-# First, create bins for based on the values observed. 3 values will result in 2 bins
-bins = [0, 6, 24]
-bins_rad = pd.cut(boston_features['RAD'], bins)
-bins_rad = bins_rad.cat.as_unordered()
+continuous = ['LotArea', '1stFlrSF', 'GrLivArea', 'SalePrice']
+categoricals = ['BldgType', 'KitchenQual', 'SaleType', 'MSZoning', 'Street', 'Neighborhood']
 
-# First, create bins for based on the values observed. 4 values will result in 3 bins
-bins = [0, 270, 360, 712]
-bins_tax = pd.cut(boston_features['TAX'], bins)
-bins_tax = bins_tax.cat.as_unordered()
-
-tax_dummy = pd.get_dummies(bins_tax, prefix='TAX', drop_first=True)
-rad_dummy = pd.get_dummies(bins_rad, prefix='RAD', drop_first=True)
-boston_features = boston_features.drop(['RAD','TAX'], axis=1)
-boston_features = pd.concat([boston_features, rad_dummy, tax_dummy], axis=1)
 ```
+
+## Continuous Features
 
 
 ```python
-age = boston_features['AGE']
-b = boston_features['B']
-logcrim = np.log(boston_features['CRIM'])
-logdis = np.log(boston_features['DIS'])
-logindus = np.log(boston_features['INDUS'])
-loglstat = np.log(boston_features['LSTAT'])
-logptratio = np.log(boston_features['PTRATIO'])
-
-# Min-Max scaling
-boston_features['B'] = (b-min(b))/(max(b)-min(b))
-boston_features['CRIM'] = (logcrim-min(logcrim))/(max(logcrim)-min(logcrim))
-boston_features['DIS'] = (logdis-min(logdis))/(max(logdis)-min(logdis))
-
-# Standardization
-boston_features['AGE'] = (age-np.mean(age))/np.sqrt(np.var(age))
-boston_features['INDUS'] = (logindus-np.mean(logindus))/np.sqrt(np.var(logindus))
-boston_features['LSTAT'] = (loglstat-np.mean(loglstat))/np.sqrt(np.var(loglstat))
-boston_features['PTRATIO'] = (logptratio-np.mean(logptratio))/(np.sqrt(np.var(logptratio)))
+# Log transform and normalize
 ```
+
+## Categorical Features
 
 
 ```python
-boston_features.head()
+# One hot encode categoricals
 ```
 
-## Run a linear model in statsmodels
+## Combine Categorical and Continuous Features
+
+
+```python
+# combine features into a single dataframe called preprocessed
+```
+
+## Run a linear model with SalePrice as the target variable in statsmodels
 
 
 ```python
@@ -90,35 +67,19 @@ boston_features.head()
 # Your code here - Check that the coefficients and intercept are the same as those from Statsmodels
 ```
 
-## Interpret the coefficients for PTRATIO, PTRATIO, LSTAT
-
-- CRIM: per capita crime rate by town
-- INDUS: proportion of non-retail business acres per town
-- CHAS: Charles River dummy variable (= 1 if tract bounds river; 0 otherwise)
-- RM: average number of rooms per dwelling
-- AGE: proportion of owner-occupied units built prior to 1940
-- DIS: weighted distances to five Boston employment centres
-- RAD: index of accessibility to radial highways
-- TAX: full-value property-tax rate per $10,000
-- PTRATIO: pupil-teacher ratio by town
-- B: 1000(Bk - 0.63)^2 where Bk is the proportion of African American individuals by town
-- LSTAT: % lower status of the population
-
 ## Predict the house price given the following characteristics (before manipulation!!)
 
 Make sure to transform your variables as needed!
 
-- CRIM: 0.15
-- INDUS: 6.07
-- CHAS: 1        
-- RM:  6.1
-- AGE: 33.2
-- DIS: 7.6
-- PTRATIO: 17
-- B: 383
-- LSTAT: 10.87
-- RAD: 8
-- TAX: 284
+- LotArea: 14977
+- 1stFlrSF: 1976
+- GrLivArea: 1976
+- BldgType: 1Fam
+- KitchenQual: Gd
+- SaleType: New
+- MSZoning: RL
+- Street: Pave
+- Neighborhood: NridgHt
 
 ## Summary
-Congratulations! You pre-processed the Boston Housing data using scaling and standardization. You also fitted your first multiple linear regression model on the Boston Housing data using statsmodels and scikit-learn!
+Congratulations! You pre-processed the Ames Housing data using scaling and standardization. You also fitted your first multiple linear regression model on the Ames Housing data using statsmodels and scikit-learn!
