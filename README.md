@@ -1,4 +1,3 @@
-
 # Multiple Linear Regression in Statsmodels - Lab
 
 ## Introduction
@@ -256,10 +255,6 @@ model = sm.OLS(y,X_int).fit()
 model.summary()
 ```
 
-    /Users/lore.dirick/anaconda3/lib/python3.6/site-packages/numpy/core/fromnumeric.py:2389: FutureWarning: Method .ptp is deprecated and will be removed in a future version. Use numpy.ptp instead.
-      return ptp(axis=axis, out=out, **kwargs)
-
-
 
 
 
@@ -275,10 +270,10 @@ model.summary()
   <th>Method:</th>             <td>Least Squares</td>  <th>  F-statistic:       </th> <td>   156.5</td>
 </tr>
 <tr>
-  <th>Date:</th>             <td>Thu, 16 Apr 2020</td> <th>  Prob (F-statistic):</th>  <td>  0.00</td> 
+  <th>Date:</th>             <td>Mon, 09 May 2022</td> <th>  Prob (F-statistic):</th>  <td>  0.00</td> 
 </tr>
 <tr>
-  <th>Time:</th>                 <td>13:06:38</td>     <th>  Log-Likelihood:    </th> <td> -738.14</td>
+  <th>Time:</th>                 <td>18:06:44</td>     <th>  Log-Likelihood:    </th> <td> -738.14</td>
 </tr>
 <tr>
   <th>No. Observations:</th>      <td>  1460</td>      <th>  AIC:               </th> <td>   1572.</td>
@@ -455,7 +450,7 @@ model.summary()
 <tr>
   <th>Kurtosis:</th>      <td> 7.159</td>  <th>  Cond. No.          </th> <td>    109.</td> 
 </tr>
-</table><br/><br/>Warnings:<br/>[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+</table><br/><br/>Notes:<br/>[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
 
 
 
@@ -471,7 +466,7 @@ linreg.fit(X, y)
 
 
 
-    LinearRegression(copy_X=True, fit_intercept=True, n_jobs=None, normalize=False)
+    LinearRegression()
 
 
 
@@ -506,7 +501,7 @@ linreg.intercept_
 
 
 
-    -0.13169736916667654
+    -0.13169736916670177
 
 
 
@@ -523,6 +518,370 @@ Make sure to transform your variables as needed!
 - MSZoning: RL
 - Street: Pave
 - Neighborhood: NridgHt
+
+
+```python
+# getting the used column names for the df
+
+continuous.remove("SalePrice")
+
+used_cols = [*continuous, *categoricals]
+used_cols
+```
+
+
+
+
+    ['LotArea',
+     '1stFlrSF',
+     'GrLivArea',
+     'BldgType',
+     'KitchenQual',
+     'SaleType',
+     'MSZoning',
+     'Street',
+     'Neighborhood']
+
+
+
+
+```python
+# creating an empty dataframe for the new row
+new_row = pd.DataFrame(columns=used_cols)
+```
+
+
+```python
+# adding the details provided into the empty dataframe
+new_row = new_row.append({"LotArea": 14977,
+                          '1stFlrSF': 1976,
+                          'GrLivArea': 1976,
+                          'BldgType': '1Fam',
+                          'KitchenQual': 'Gd',
+                          'SaleType': 'New',
+                          'MSZoning': 'RL',
+                          'Street': 'Pave',
+                          'Neighborhood': 'NridgHt'},
+                          ignore_index=True)
+new_row
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>LotArea</th>
+      <th>1stFlrSF</th>
+      <th>GrLivArea</th>
+      <th>BldgType</th>
+      <th>KitchenQual</th>
+      <th>SaleType</th>
+      <th>MSZoning</th>
+      <th>Street</th>
+      <th>Neighborhood</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>14977</td>
+      <td>1976</td>
+      <td>1976</td>
+      <td>1Fam</td>
+      <td>Gd</td>
+      <td>New</td>
+      <td>RL</td>
+      <td>Pave</td>
+      <td>NridgHt</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+# first we'll tackle the continuous columns
+new_row_cont = new_row[continuous]
+
+# log features
+log_names = [f'{column}_log' for column in new_row_cont.columns]
+
+new_row_log = np.log(new_row_cont.astype(float)) # won't work unless float
+new_row_log.columns = log_names
+
+# normalizing
+for col in continuous:
+    # normalize using mean and std from overall dataset
+    new_row_log[f'{col}_log'] = (new_row_log[f'{col}_log'] - ames[col].mean()) / ames[col].std()
+new_row_log
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>LotArea_log</th>
+      <th>1stFlrSF_log</th>
+      <th>GrLivArea_log</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>-1.052694</td>
+      <td>-2.987777</td>
+      <td>-2.869517</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+# now time for the categoricals
+new_row_cat = new_row[categoricals]
+
+new_row_ohe = pd.DataFrame(columns = ames_ohe.columns)
+
+# using complicated for loops to ohe the new row
+ohe_dict = {}
+for col_type in new_row_cat.columns:
+    col_list = [c for c in new_row_ohe.columns.to_list() if col_type in c]
+    for x in col_list:
+        if new_row_cat[col_type][0] in x:
+            ohe_dict[x] = 1
+        else:
+            ohe_dict[x] = 0
+            
+# putting the results in a dataframe
+new_row_ohe = new_row_ohe.append(ohe_dict, ignore_index=True)
+new_row_ohe
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>BldgType_2fmCon</th>
+      <th>BldgType_Duplex</th>
+      <th>BldgType_Twnhs</th>
+      <th>BldgType_TwnhsE</th>
+      <th>KitchenQual_Fa</th>
+      <th>KitchenQual_Gd</th>
+      <th>KitchenQual_TA</th>
+      <th>SaleType_CWD</th>
+      <th>SaleType_Con</th>
+      <th>SaleType_ConLD</th>
+      <th>...</th>
+      <th>Neighborhood_NoRidge</th>
+      <th>Neighborhood_NridgHt</th>
+      <th>Neighborhood_OldTown</th>
+      <th>Neighborhood_SWISU</th>
+      <th>Neighborhood_Sawyer</th>
+      <th>Neighborhood_SawyerW</th>
+      <th>Neighborhood_Somerst</th>
+      <th>Neighborhood_StoneBr</th>
+      <th>Neighborhood_Timber</th>
+      <th>Neighborhood_Veenker</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+<p>1 rows × 44 columns</p>
+</div>
+
+
+
+
+```python
+# putting together this row's data - both continuous and categorical
+new_row_processed = pd.concat([new_row_log, new_row_ohe], axis=1)
+new_row_processed
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>LotArea_log</th>
+      <th>1stFlrSF_log</th>
+      <th>GrLivArea_log</th>
+      <th>BldgType_2fmCon</th>
+      <th>BldgType_Duplex</th>
+      <th>BldgType_Twnhs</th>
+      <th>BldgType_TwnhsE</th>
+      <th>KitchenQual_Fa</th>
+      <th>KitchenQual_Gd</th>
+      <th>KitchenQual_TA</th>
+      <th>...</th>
+      <th>Neighborhood_NoRidge</th>
+      <th>Neighborhood_NridgHt</th>
+      <th>Neighborhood_OldTown</th>
+      <th>Neighborhood_SWISU</th>
+      <th>Neighborhood_Sawyer</th>
+      <th>Neighborhood_SawyerW</th>
+      <th>Neighborhood_Somerst</th>
+      <th>Neighborhood_StoneBr</th>
+      <th>Neighborhood_Timber</th>
+      <th>Neighborhood_Veenker</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>-1.052694</td>
+      <td>-2.987777</td>
+      <td>-2.869517</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+<p>1 rows × 47 columns</p>
+</div>
+
+
+
+
+```python
+# now - FINALLY - we can model
+
+new_row_pred_log = linreg.predict(new_row_processed)
+new_row_pred_log
+```
+
+
+
+
+    array([-0.66800851])
+
+
+
+
+```python
+# prediction needs to be scaled and exponentiated
+np.exp(new_row_pred_log) * ames["SalePrice"].std() + ames["SalePrice"].mean()
+```
+
+
+
+
+    array([221653.64351813])
+
+
 
 ## Summary
 Congratulations! You pre-processed the Ames Housing data using scaling and standardization. You also fitted your first multiple linear regression model on the Ames Housing data using statsmodels and scikit-learn!
