@@ -1,4 +1,3 @@
-
 # Multiple Linear Regression in Statsmodels - Lab
 
 ## Introduction
@@ -80,6 +79,11 @@ Make sure to transform your variables as needed!
 - MSZoning: RL
 - Street: Pave
 - Neighborhood: NridgHt
+
+
+```python
+# Your code here - predict the house price given the following characteristics
+```
 
 ## Summary
 Congratulations! You pre-processed the Ames Housing data using scaling and standardization. You also fitted your first multiple linear regression model on the Ames Housing data using statsmodels and scikit-learn!
